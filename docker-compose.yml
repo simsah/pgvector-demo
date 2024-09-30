@@ -1,10 +1,12 @@
-# Compose a postgres database together with the extension pgvector
+version: '3.8'
+
 services:
-  db:
-    hostname: db
+  my_awesome_db:
+    hostname: localhost
     image: ankane/pgvector
     ports:
-     - 5432:5432
+      - "5432:5432"
+    container_name: postgresql-local
     restart: always
     environment:
       - POSTGRES_DB=vectordb
@@ -12,4 +14,18 @@ services:
       - POSTGRES_PASSWORD=testpwd
       - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:
-     - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - /var/run/postgres.sock:/var/run/postgres/postgres.sock
+      - /home/simsah/docker-apps/volumes/postgres-data:/var/lib/postgresql/data
+
+  pg_admin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin4
+    ports:
+      - "15432:80"
+    environment:
+      - GUNICORN_THREADS=1
+      - PGADMIN_DEFAULT_EMAIL=simsah@gmail
+      - PGADMIN_DEFAULT_PASSWORD=cosmos
+    depends_on:
+      - my_awesome_db

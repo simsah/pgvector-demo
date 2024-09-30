@@ -4,7 +4,7 @@ from configparser import ConfigParser
 from app import DB_INIT_FILE
 
 
-def db_config(filename: Path = DB_INIT_FILE, section: str = 'postgresql'):
+def db_config(filename: Path = DB_INIT_FILE, section: str = 'vectordb'):
     parser = ConfigParser()
     parser.read(filename)
     if parser.has_section(section):
